@@ -11,7 +11,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 # resolve relative links to figures
 long_description = re.sub(
     r"!\[(.*?)\]\((docs/_figures/.*?)\)",
-    r"![\1](https://github.com/DHI/terracotta/raw/main/\2)",
+    r"![\1](https://github.com/NLTGit/gem_terracotta/raw/gems/\2)",
     long_description,
 )
 
@@ -27,7 +27,7 @@ setup(
     description="A modern XYZ tile server written in Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/DHI/terracotta",
+    url="https://github.com/NLTGit/gem_terracotta/tree/gems",
     author="Dion Häfner",
     author_email="mail@dionhaefner.de",
     keywords="xyz tileserver rasterio cloud-optimized-geotiff serverless",
