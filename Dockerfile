@@ -1,12 +1,12 @@
-FROM python:3.12.2-slim-bullseye AS build_wheel
+FROM python:3.12.2-bullseye AS build_wheel
 
-RUN apt-get update \
+RUN apt-get update
 RUN apt-get install \
     -y --no-install-recommends \
     build-essential
+RUN apt-get update && apt-get install -y git
+RUN git --version
 RUN rm -rf /var/lib/apt/lists/*
-
-RUN apt-get install -y git
 
 COPY . /terracotta
 
@@ -16,7 +16,9 @@ RUN python -m pip install --upgrade pip
 RUN python setup.py bdist_wheel
 
 
-FROM python:3.12.2-slim-bullseye
+FROM python:3.12.2-bullseye
+
+COPY --from=build_wheel /terracotta/dist/*.whl /terracotta/
 
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir \
@@ -25,7 +27,7 @@ RUN pip install --no-cache-dir \
         gunicorn \
         werkzeug==0.16.0 \
         markupsafe==2.0.1 
-RUN git --version
+        
 RUN pip install git+https://github.com/NLTGit/gem_terracotta.git@gems 
 RUN rm -rf /terracotta
 
