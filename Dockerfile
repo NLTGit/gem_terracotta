@@ -1,11 +1,12 @@
 FROM python:3.12.2-slim-bullseye AS build_wheel
 
 RUN apt-get update \
-    && apt-get install \
+RUN apt-get install \
     -y --no-install-recommends \
-    build-essential \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN apt-get install -y git
 
 COPY . /terracotta
 
@@ -23,7 +24,8 @@ RUN pip install --no-cache-dir \
         psycopg2-binary \
         gunicorn \
         werkzeug==0.16.0 \
-        markupsafe==2.0.1
+        markupsafe==2.0.1 
+RUN git --version
 RUN pip install git+https://github.com/NLTGit/gem_terracotta.git@gems 
 RUN rm -rf /terracotta
 
