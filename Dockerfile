@@ -7,7 +7,7 @@ RUN apt-get update \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ../ /terracotta
+COPY . /terracotta
 
 WORKDIR /terracotta
 
