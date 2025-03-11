@@ -7,27 +7,25 @@ RUN apt-get update \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./ /terracotta
+COPY ../ /terracotta
 
 WORKDIR /terracotta
 
-RUN python -m pip install --upgrade pip \
-    && python setup.py bdist_wheel
+RUN python -m pip install --upgrade pip
+RUN python setup.py bdist_wheel
 
 
 FROM python:3.12.2-slim-bullseye
 
-COPY --from=build_wheel /terracotta/dist/*.whl /terracotta/
-
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir \
-        $(ls /terracotta/*.whl) \
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir \
         pymysql>=1.0.0 \
         psycopg2-binary \
         gunicorn \
         werkzeug==0.16.0 \
-        markupsafe==2.0.1 \
-    && rm -rf /terracotta
+        markupsafe==2.0.1
+RUN pip install git+git@github.com:NLTGit/gem_terracotta.git@gems 
+RUN rm -rf /terracotta
 
 COPY docker/resources /
 
