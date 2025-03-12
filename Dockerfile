@@ -13,6 +13,7 @@ RUN cd gem_terracotta && git checkout tags/v1.0 && cd ..
 RUN mkdir /terracotta
 RUN ls -la
 RUN cp -a /gem_terracotta/. /terracotta/
+RUN rm -rf /gem_terracotta
 
 WORKDIR /terracotta
 
@@ -32,7 +33,7 @@ RUN pip install --no-cache-dir \
         werkzeug==0.16.0 \
         markupsafe==2.0.1 
         
-RUN pip install git+https://github.com/NLTGit/gem_terracotta.git@gems 
+RUN pip install git+https://github.com/NLTGit/gem_terracotta.git@v1.0
 RUN rm -rf /terracotta
 
 COPY docker/resources /
