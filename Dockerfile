@@ -8,7 +8,11 @@ RUN apt-get update && apt-get install -y git
 RUN git --version
 RUN rm -rf /var/lib/apt/lists/*
 
-COPY . /terracotta
+RUN git clone https://github.com/NLTGit/gem_terracotta.git
+RUN cd gem_terracotta && git checkout tags/v1.0 && cd ..
+RUN mkdir /terracotta
+RUN ls -la
+RUN cp -a /gem_terracotta/. /terracotta/
 
 WORKDIR /terracotta
 
