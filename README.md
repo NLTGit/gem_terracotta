@@ -74,6 +74,24 @@ If the process errors out remove the tc.sqlite file created before trying again.
 
 After completed upload the popdb.py as well as all tif's and tc.sqlite to EFS or S3 bucket
 
+### hosting the tile service
+Build container/run then stablish connection to tile service
+
+From terminal, don't run detatched till confirming everything is working. 
+```
+cd <git repo>
+docker build -t 'terracotta' .
+docker run -v <path to tc.sqlite and tif files>:/data --env TC_DRIVER_PATH=/data/tc.sqlite terracotta
+```
+
+Open another terminal 
+```
+source ~/envs/tc-deploy/bin/activate
+terracotta connect http://<docker ip here>:5000
+```
+Goto the URL provided via terracotta connect. 
+Select a tif file to test and confirm no errors on the terminal screens and tiles are showing up on map.
+
 ### nuances
 
 1. when you pip install terracotta you must do so from the same version you are hosting and building the db from. If you don't you will get an error when you try to consume the tiles.
