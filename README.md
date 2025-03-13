@@ -66,7 +66,7 @@ for keys, raster_file in rasters.items():
 ```
 In this case we would rename the other tif to otherFileNmae_0_other_0_other_other.tif to follow the pattern from otherFileName.tif
 
-After editing the file save it then run 1``$ python3 popdb.py```
+After editing the file save it then run ```$ python3 popdb.py```
 
 If you get a "loading into memory error" when processing large files make sure you have installed crick via pip to allow chunking of larger files.
 
@@ -100,6 +100,8 @@ Select a tif file to test and confirm no errors on the terminal screens and tile
 python3 -m "pip uninstall terracotta"
 python3 -m "pip install git+https://github.com/NLTGit/gem_terracotta.git@v1.1"
 ```
+3. If using ECS's then one image can be used to host multiple end points. There is no reason to build another image.
+4. If you don't need the GEM colorway it might be better to build from main terracotta branch for up to date changes.
 
 ## Why Terracotta?
 
