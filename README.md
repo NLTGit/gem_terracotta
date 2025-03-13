@@ -20,6 +20,69 @@ and [Rasterio](https://github.com/mapbox/rasterio).
 [Satlas, powered by Terracotta](http://satlas.dk) |
 [Docker Image](https://hub.docker.com/r/dhigras/terracotta/tags)
 
+## Setting up dev environment
+
+### Setup venv
+```
+$ pip install virtualenv --user
+$ virtualenv ~/envs/tc-deploy --python=python3.10
+$ source ~/envs/tc-deploy/bin/activate
+$ pip install -r zappa_requirements.txt
+$ pip install crick
+$ pip install -e .
+$ pip install awscli
+```
+
+### Updating or creating database 
+```
+source ~/envs/tc-deploy/bin/activate
+cd <dir with processed tif files>
+rm tc.sqlite
+cp <github repo>/popdb.py ./popdb.py
+vi popdb.py-
+```
+File structures have to be the same for any tiles served on a single server but you can "fake it" if you have to but not recommended. 
+Given the file name ```testing_2025_05_b01_cog.tiff``` your pattern would be ```{name}_{year}_{month}_{band}_{compression}.tif```
+If you had another file in the directory which didn't follow the pattern then you will have to make a fake "keys" entry for the record. 
+See example below for hackish way to do this. 
+```
+#import TC
+import terracotta as tc
+
+#create db
+driver = tc.get_driver('tc.sqlite')
+key_names = ('year', 'band', 'intensity', 'period', 'geotype', 'resolution')
+driver.create(key_names)
+
+#assign rasters to be included
+rasters = { 
+  ('2023', '1', 'pga', '475', 'rock', '3min'): 'v2023_1_pga_475_rock_3min.tif',
+  (3000', '0', 'other', '0', 'other', 'other'): 'otherFileNmae_0_other_0_other_other.tif',
+}
+
+#add entry for each raster in db
+for keys, raster_file in rasters.items():
+    driver.insert(keys, raster_file, override_path=f'/data/{raster_file}')
+```
+In this case we would rename the other tif to otherFileNmae_0_other_0_other_other.tif to follow the pattern from otherFileName.tif
+
+After editing the file save it then run 1``$ python3 popdb.py```
+
+If you get a "loading into memory error" when processing large files make sure you have installed crick via pip to allow chunking of larger files.
+
+If the process errors out remove the tc.sqlite file created before trying again. 
+
+After completed upload the popdb.py as well as all tif's and tc.sqlite to EFS or S3 bucket
+
+### nuances
+
+1. when you pip install terracotta you must do so from the same version you are hosting and building the db from. If you don't you will get an error when you try to consume the tiles.
+2. To ensure you have the right version of terracotta with our custom colorway installed run (note version can change, check dockerfile.
+```
+python3 -m "pip uninstall terracotta"
+python3 -m "pip install git+https://github.com/NLTGit/gem_terracotta.git@v1.1"
+```
+
 ## Why Terracotta?
 
 - It is trivial to get going. Got a folder full of
