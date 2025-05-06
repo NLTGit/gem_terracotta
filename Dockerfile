@@ -33,7 +33,7 @@ RUN pip install --no-cache-dir \
         werkzeug==0.16.0 \
         markupsafe==2.0.1 
         
-RUN pip install git+https://github.com/NLTGit/gem_terracotta.git@v1.2.1
+RUN pip install git+https://github.com/NLTGit/gem_terracotta.git@v1.2.2
 RUN rm -rf /terracotta
 
 COPY docker/resources /
